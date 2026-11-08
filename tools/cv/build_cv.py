@@ -76,15 +76,15 @@ def _education(T, lang):
     def line(label, text):
         return f'<div class="line"><b>{label}</b> {text}</div>'
     msc = (f'<div class="item"><div class="row"><b>{T("M.Sc. in Computer Science", "西北工业大学 · 计算机科学与技术 · 硕士")}</b><span class="when">2024.09 – 2027.06</span></div>'
-           f'<div class="meta">{T("Northwestern Polytechnical University, Xi&#39;an, China · Supervisor: Prof. Zhaowen Liu", "计算机学院，中国西安 · 导师：刘兆文 教授")}</div>'
+           f'<div class="meta">{T("Northwestern Polytechnical University, Xi&#39;an, China · Supervisor: Prof. Zhaowen Liu", "计算机学院，中国西安 · 导师：刘曌雯 教授")}</div>'
            + line(T("Weighted average mark:", "加权平均成绩："), "87.29 / 100")
            + line(T("Thesis:", "学位论文："), T("“System-Level Framework for Interpretable Multi-Omic Network Modeling through LLM-Enhanced Knowledge Graphs”",
                                                "《基于大语言模型增强知识图谱的可解释多组学网络系统级建模框架》"))
            + line(T("Core courses:", "核心课程："), T("Algorithm Design and Analysis (95), Trustworthy Artificial Intelligence (93), High Performance Computing (92), Introduction to Bioinformatics (90)",
                                                     "算法设计与分析（95）、可信人工智能（93）、高性能计算（92）、生物信息学导论（90）"))
            + "</div>")
-    # we leave the B.Sc. GPA out of the public CV; application forms that ask for it get it separately
-    bsc = (f'<div class="item"><div class="row"><b>{T("B.Sc. in Software Engineering", "浙江工业大学 · 软件工程 · 学士")}</b><span class="when">2020.09 – 2024.06</span></div>'
+    # we leave the B.Eng. GPA out of the public CV; application forms that ask for it get it separately
+    bsc = (f'<div class="item"><div class="row"><b>{T("B.Eng. in Software Engineering", "浙江工业大学 · 软件工程 · 工学学士")}</b><span class="when">2020.10 – 2024.06</span></div>'
            f'<div class="meta">{T("Zhejiang University of Technology, Hangzhou, China", "中国杭州")}</div>'
            + line(T("Graduation thesis:", "毕业设计："), T("“Visual Analysis of Student Behavior in Learning Videos”, Outstanding Graduation Thesis Award",
                                                        "《学习视频中学生行为的可视化分析》，校级优秀毕业设计（论文）"))
@@ -93,7 +93,7 @@ def _education(T, lang):
 
 
 def _research(T, lang):
-    supervisor = T("Northwestern Polytechnical University · Supervisor: Prof. Zhaowen Liu", "西北工业大学 · 导师：刘兆文 教授")
+    supervisor = T("Northwestern Polytechnical University · Supervisor: Prof. Zhaowen Liu", "西北工业大学 · 导师：刘曌雯 教授")
     aegis_link = '<a href="https://github.com/azzaouiyazid/AEGIS">github.com/azzaouiyazid/AEGIS</a>'
     thesis = _item(
         T("Master’s thesis: LLM-enhanced knowledge graphs for multi-omics", "硕士学位论文课题：基于大语言模型增强知识图谱的多组学研究"), T("Ongoing", "进行中"), supervisor,
@@ -104,7 +104,7 @@ def _research(T, lang):
     # methods and cohort size only: the audit's results stay out until the paper is published
     aegis = _item(
         T("AEGIS: privacy-preserving generative model of disease trajectories", "AEGIS：基于差分隐私的疾病轨迹生成模型"), T("2026 – Present", "2026 – 至今"),
-        T("Northwestern Polytechnical University · Supervisor: Prof. Zhaowen Liu · Role: first author", "西北工业大学 · 导师：刘兆文 教授 · 角色：第一作者"),
+        T("Northwestern Polytechnical University · Supervisor: Prof. Zhaowen Liu · Role: first author", "西北工业大学 · 导师：刘曌雯 教授 · 角色：第一作者"),
         [T("Built and trained AEGIS, a GPT-style transformer of lifetime disease trajectories, on 251,204 UK Biobank participants with person-level differential privacy (DP-SGD, ε = 8, 3, 1).",
            "构建并训练 AEGIS——一种预测终生疾病轨迹的 GPT 式 Transformer 模型，基于 UK Biobank 251,204 名参与者，采用个体级差分隐私训练（DP-SGD，ε = 8、3、1）。"),
          T("Designed a privacy audit with planted “canary” patients and membership-inference attacks, and evaluated how standard similarity checks for synthetic data behave.",
