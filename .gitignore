@@ -1,0 +1,8 @@
+# macOS and editor clutter
+.DS_Store
+.vscode/
+# Python caches from tools/cv
+__pycache__/
+*.pyc
+# temporary HTML that tools/cv/build_cv.py writes while printing
+tools/cv/cv_*.html

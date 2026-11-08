@@ -1,0 +1,35 @@
+/* Print styles for the CV. A4, two pages; the footer is added by build_cv.py when printing. */
+@font-face{font-family:Plex;src:url(fonts/IBMPlexSans-400.ttf);font-weight:400}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexSans-600.ttf);font-weight:600}
+@font-face{font-family:Plex;src:url(fonts/IBMPlexSans-700.ttf);font-weight:700}
+@page{size:A4;margin:14mm 15mm 16mm}
+*{box-sizing:border-box}
+body{margin:0;font-family:Plex,"Noto Sans CJK SC","Noto Sans SC",sans-serif;font-size:9.15pt;line-height:1.42;color:#3B2A20}
+:lang(zh) body, body:lang(zh){font-size:9.2pt;line-height:1.6}
+a{color:#7A4A2C;text-decoration:none}
+.top{display:grid;grid-template-columns:1fr 30mm;gap:8mm;align-items:start}
+h1{margin:0;font-size:23pt;letter-spacing:.04em;font-weight:700;color:#3B2A20}
+.sub{color:#7E5F49;font-size:10pt;margin-top:2pt}
+.contact{margin-top:8pt;display:grid;grid-template-columns:auto 1fr;gap:1.5pt 8pt;font-size:9pt}
+.contact b{font-weight:600}
+.photo{width:30mm;height:38.5mm;object-fit:cover;border-radius:2mm}
+h2{margin:11pt 0 5pt;font-size:10pt;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3B2A20;background:#F5E6D0;border-left:3.2pt solid #8A5A3B;padding:3pt 8pt;break-after:avoid}
+h2 small{font-weight:600;color:#9C7C64;font-size:7.5pt;letter-spacing:.12em;margin-left:6pt}
+.item{margin:0 0 6.5pt;break-inside:avoid}
+.keep{break-inside:avoid}
+.row{display:flex;justify-content:space-between;gap:10pt;align-items:baseline}
+.row b{font-weight:700}
+.when{color:#7E5F49;white-space:nowrap;font-size:8.8pt}
+.meta{color:#7E5F49;font-style:italic;font-size:8.8pt}
+:lang(zh) .meta{font-style:normal}
+.line{margin-top:1pt}
+.line b{font-weight:600}
+ul{margin:3pt 0 0;padding-left:12pt}
+li{margin:1.5pt 0}
+.refs p{margin:0 0 5pt;padding-left:16pt;text-indent:-16pt;break-inside:avoid}
+.refs .n{color:#8A5A3B;font-weight:700}
+.note{text-align:right;font-size:7.5pt;color:#9C7C64;margin:-2pt 0 3pt}
+.skills{display:grid;grid-template-columns:34mm 1fr;gap:3pt 8pt}
+.skills b{font-weight:600}
+.langs span{margin-right:12pt}
+.langs b{font-weight:600}

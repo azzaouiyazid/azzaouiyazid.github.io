@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en" data-lang="en" data-title-en="Yazid Azzaoui · AI, LLMs and omics" data-title-zh="Yazid Azzaoui · 人工智能、大模型与多组学">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Yazid Azzaoui · AI, LLMs and omics</title>
+<meta name="description" content="Yazid Azzaoui builds AI for biomedical data: large language models, private generative transformers and multimodal models for multi-omics, health records and the scientific literature.">
+<meta name="author" content="Yazid Azzaoui">
+<meta name="theme-color" content="#F5E6D0">
+<link rel="canonical" href="https://azzaouiyazid.github.io/">
+<link rel="alternate" hreflang="en" href="https://azzaouiyazid.github.io/?lang=en">
+<link rel="alternate" hreflang="zh-CN" href="https://azzaouiyazid.github.io/?lang=zh">
+<link rel="alternate" hreflang="x-default" href="https://azzaouiyazid.github.io/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://azzaouiyazid.github.io/">
+<meta property="og:title" content="Yazid Azzaoui · AI, LLMs and omics">
+<meta property="og:description" content="Large language models, private generative transformers and multimodal AI for multi-omics. M.Sc. Computer Science, Northwestern Polytechnical University.">
+<meta property="og:image" content="https://azzaouiyazid.github.io/assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Yazid Azzaoui","url":"https://azzaouiyazid.github.io/","image":"https://azzaouiyazid.github.io/assets/img/me.jpg","jobTitle":"Graduate researcher in AI, LLMs and multi-omics","email":"mailto:yazidazzaoui@mail.nwpu.edu.cn","affiliation":{"@type":"CollegeOrUniversity","name":"Northwestern Polytechnical University"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Zhejiang University of Technology"},"knowsAbout":["Large language models","Generative AI","Differential privacy","Multi-omics","Knowledge graphs"],"sameAs":["https://orcid.org/0009-0004-1744-2056","https://www.linkedin.com/in/yazid-azzaoui/","https://github.com/azzaouiyazid"]}</script>
+<script>
+/* Pick the language before the page paints, so nobody sees the wrong one flash.
+   Order: ?lang= in the link, then the visitor's saved choice, then their clock and browser.
+   A Greater China time zone or a Chinese browser gets Chinese. We use no IP lookup because
+   those services are often blocked in China and would send visitor data to a third party. */
+(function () {
+  var CHINA_TZ = /^Asia\/(Shanghai|Chongqing|Chungking|Harbin|Urumqi|Kashgar|Hong_Kong|Macau|Taipei)$/;
+  var root = document.documentElement;
+  var lang = null;
+  try {
+    lang = new URLSearchParams(location.search).get('lang');
+  } catch (e) {
+    // very old browsers lack URLSearchParams; the saved choice or the clock decides instead
+  }
+  if (lang !== 'zh' && lang !== 'en') {
+    try {
+      lang = localStorage.getItem('lang');
+    } catch (e) {
+      // Safari's private mode throws on localStorage, so "no saved choice" is the normal outcome
+      lang = null;
+    }
+  }
+  if (lang !== 'zh' && lang !== 'en') {
+    var tz = '';
+    try {
+      tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    } catch (e) {
+      // without Intl we decide by browser language alone
+    }
+    var first = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    lang = CHINA_TZ.test(tz) || first.indexOf('zh') === 0 ? 'zh' : 'en';
+  }
+  root.dataset.lang = lang;
+  root.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  document.title = lang === 'zh' ? root.dataset.titleZh : root.dataset.titleEn;
+})();
+</script>
+<link rel="preload" href="assets/fonts/source-serif-4-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/source-sans-3-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/data/brain_lite.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/css/site.css">
+
+</head>
+<body>
+<a class="skip" href="#main"><span class="en">Skip to content</span><span class="zh">跳到正文</span></a>
+
+<header class="bar" id="bar">
+  <a class="name" href="#top">Yazid Azzaoui</a>
+  <div class="right">
+    <nav aria-label="Sections" id="sitenav">
+      <a href="#work-areas"><span class="en">What I do</span><span class="zh">研究方向</span></a>
+      <a href="#connections"><span class="en">Connections</span><span class="zh">研究联系</span></a>
+      <a href="#about"><span class="en">About</span><span class="zh">关于我</span></a>
+      <a href="#work"><span class="en">Work</span><span class="zh">代表工作</span></a>
+      <a href="#pubs"><span class="en">Publications</span><span class="zh">论文</span></a>
+      <a href="#contact"><span class="en">Contact</span><span class="zh">联系</span></a>
+    </nav>
+    <button class="menubtn" id="menubtn" type="button" aria-expanded="false" aria-controls="sitenav"><span class="en">Menu</span><span class="zh">菜单</span></button>
+    <button class="langbtn" id="langbtn" type="button" aria-label="Switch language / 切换语言"><span class="en">中文</span><span class="zh">EN</span></button>
+  </div>
+</header>
+
+<canvas id="brain" aria-hidden="true"></canvas>
+<img id="poster" src="assets/img/poster.webp" alt="" aria-hidden="true">
+<script src="assets/js/layout.js"></script>
+<div id="labels" aria-hidden="true"></div>
+<div class="lobecard" id="lobecard"><b></b><span></span></div>
+
+<main id="main">
+<div class="layer" id="top">
+  <div class="wrap">
+    <section class="hero">
+      <div class="live">
+        <div class="who"><img src="assets/img/me_sq.jpg" alt="Yazid Azzaoui" width="64" height="64">
+          <p class="meta"><span class="en">M.Sc. Computer Science · AI, LLMs and multi-omics<br>Northwestern Polytechnical University, Xi'an</span><span class="zh">计算机科学硕士 · 人工智能、大模型与多组学<br>西北工业大学，西安</span></p></div>
+        <h1>Yazid Azzaoui</h1>
+        <p class="lead"><span class="en">I build AI for biomedical data: large language models, generative transformers and multimodal models that learn from multi-omics, health records and the scientific literature.</span><span class="zh">我研究面向生物医学数据的人工智能：利用大语言模型、生成式 Transformer 与多模态模型，从多组学数据、电子病历和科学文献中学习。</span></p>
+        <ul class="glance">
+          <li><a href="#pubs"><b><span class="en">2 manuscripts</span><span class="zh">2 篇论文</span></b><span class="en">under review</span><span class="zh">在审</span></a></li>
+          <li><a href="#conferences"><b><span class="en">OHBM member</span><span class="zh">OHBM 会员</span></b><span class="en">poster at OHBM 2026, France</span><span class="zh">OHBM 2026 海报，法国</span></a></li>
+          <li><a href="https://github.com/azzaouiyazid/AEGIS"><b>AEGIS</b><span class="en">open-source code</span><span class="zh">开源代码</span></a></li>
+          <li><b>CSC</b><span class="en">Chinese Government Scholarship</span><span class="zh">中国政府奖学金</span></li>
+        </ul>
+        <div class="row"><a class="btn" href="#work-areas"><span class="en">What I do</span><span class="zh">研究方向</span></a><a class="btn ghost en" href="assets/cv/Yazid_Azzaoui_CV_EN.pdf" download>Download CV</a><a class="btn ghost zh" href="assets/cv/Yazid_Azzaoui_CV_ZH.pdf" download>下载简历</a></div>
+      </div>
+      <span class="hint"><span class="en">Drag to turn · point at a lobe</span><span class="zh">拖动旋转 · 指向脑叶查看名称</span></span>
+    </section>
+
+    <div class="areas-head" id="work-areas"><h2><span class="en">What I do</span><span class="zh">研究方向</span></h2></div>
+    <section class="area" data-lobe="2" style="--c:var(--plum-t)">
+      <div class="live">
+        <span class="num"><span class="k"><span class="en">What I do · </span><span class="zh">研究方向 · </span></span>01 · <span class="en">Language models</span><span class="zh">大语言模型</span></span>
+        <h3><span class="en">LLMs that read the literature</span><span class="zh">读懂文献的大语言模型</span></h3>
+        <p class="en">I build LLM pipelines that extract relationships from biomedical papers into knowledge graphs, then check each claim against the data so explanations trace back to evidence.</p>
+        <p class="zh">我构建大语言模型流程，从生物医学文献中抽取关系并构建知识图谱，再用数据逐条核验，让模型的解释可以追溯到证据。</p>
+        <div class="tags"><span class="tag"><span class="en">LLMs</span><span class="zh">大语言模型</span></span><span class="tag"><span class="en">Information extraction</span><span class="zh">信息抽取</span></span><span class="tag"><span class="en">Knowledge graphs</span><span class="zh">知识图谱</span></span><span class="tag"><span class="en">Explainable AI</span><span class="zh">可解释 AI</span></span></div>
+      </div>
+    </section>
+    <section class="area" data-lobe="1" style="--c:var(--teal-t)">
+      <div class="live">
+        <span class="num"><span class="k"><span class="en">What I do · </span><span class="zh">研究方向 · </span></span>02 · <span class="en">Generative AI and privacy</span><span class="zh">生成式 AI 与隐私计算</span></span>
+        <h3><span class="en">Private generative transformers</span><span class="zh">隐私保护的生成式 Transformer</span></h3>
+        <p class="en">AEGIS is a GPT-style model of lifetime disease histories, trained with differential privacy and audited with planted canary patients, so it learns the disease, not the people.</p>
+        <p class="zh">AEGIS 是一个学习全生命周期疾病史的 GPT 式生成模型，采用差分隐私（DP-SGD）训练，并通过植入“金丝雀”患者进行隐私审计：它学习的是疾病规律，而不是具体的人。</p>
+        <div class="tags"><span class="tag">Transformers</span><span class="tag">DP-SGD</span><span class="tag"><span class="en">Membership inference</span><span class="zh">成员推断</span></span><span class="tag"><span class="en">Synthetic data</span><span class="zh">合成数据</span></span></div>
+      </div>
+    </section>
+    <section class="area" data-lobe="0" style="--c:var(--caramel-t)">
+      <div class="live">
+        <span class="num"><span class="k"><span class="en">What I do · </span><span class="zh">研究方向 · </span></span>03 · <span class="en">Multimodal AI</span><span class="zh">多模态人工智能</span></span>
+        <h3><span class="en">Multimodal AI for multi-omics</span><span class="zh">面向多组学的多模态人工智能</span></h3>
+        <p class="en">I train models that combine blood proteins, metabolites, genetics and brain MRI from UK Biobank. Depression is the test case: the models predict each of its nine symptoms separately, and every gain is tested against shuffled outcomes.</p>
+        <p class="zh">我基于 UK Biobank 的血液蛋白质组、代谢组、遗传与脑影像数据训练多模态模型。以抑郁症为应用场景：模型分别预测九项症状，并用置换检验验证每一项提升。</p>
+        <div class="tags"><span class="tag"><span class="en">Multimodal learning</span><span class="zh">多模态学习</span></span><span class="tag"><span class="en">Gradient boosting</span><span class="zh">梯度提升</span></span><span class="tag"><span class="en">Permutation testing</span><span class="zh">置换检验</span></span><span class="tag">UK Biobank</span></div>
+      </div>
+    </section>
+
+    <section id="connections">
+      <div class="pin">
+        <div class="ctext live">
+          <h2><span class="en">How my work connects</span><span class="zh">研究之间的联系</span></h2>
+          <p><span class="en">Each project sits in the lobe of its research area, wired to the methods and data it uses.</span><span class="zh">每个项目位于其研究方向所对应的脑叶中，并与它所用的方法和数据相连。</span></p>
+          <div class="legend"><span style="--c:var(--brown)"><span class="en">projects</span><span class="zh">项目</span></span><span style="--c:var(--teal)"><span class="en">methods</span><span class="zh">方法</span></span><span style="--c:var(--plum)"><span class="en">data</span><span class="zh">数据</span></span></div>
+          <p class="note" id="connhint"></p>
+          <ul class="conn-list sr" id="connlist"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="sheet">
+  <div class="wrap">
+    <section class="sec" id="about">
+      <div class="side"><img class="portrait" src="assets/img/me.jpg" alt="Portrait of Yazid Azzaoui" width="220" height="275" loading="lazy"><h2><span class="en">About</span><span class="zh">关于我</span></h2></div>
+      <div class="bio">
+        <p class="en">I am a master's student in computer science at Northwestern Polytechnical University in Xi'an, working with Prof. Zhaowen Liu. I came to biomedical AI from software engineering, and I build my research end to end: from data pipelines on UK Biobank to transformers and language models trained on GPU servers.</p>
+        <p class="zh">我是西北工业大学计算机科学专业的硕士研究生，导师为 刘兆文 教授。我从软件工程转向生物医学人工智能，并端到端地完成自己的研究：从 UK Biobank 数据处理流程，到在 GPU 服务器上训练 Transformer 和大语言模型。</p>
+        <p class="en">What connects my projects is a concern for doing this honestly: models that respect how small biological signals are, protect the people in the data, and explain themselves in terms a clinician can check.</p>
+        <p class="zh">贯穿我所有项目的，是对严谨与诚实的坚持：模型要尊重生物信号的微弱，要保护数据中的每一个人，并能用临床医生可以核验的方式解释自己。</p>
+        <dl class="facts">
+          <div><dt><span class="en">Now</span><span class="zh">在读</span></dt><dd><span class="en">M.Sc. Computer Science, NPU, 2024–2027</span><span class="zh">西北工业大学 计算机科学硕士，2024–2027</span></dd></div>
+          <div><dt><span class="en">Supervisor</span><span class="zh">导师</span></dt><dd><span class="en">Prof. Zhaowen Liu</span><span class="zh">刘兆文 教授</span></dd></div>
+          <div><dt><span class="en">Scholarship</span><span class="zh">奖学金</span></dt><dd><span class="en">Chinese Government Scholarship</span><span class="zh">中国政府奖学金</span></dd></div>
+          <div><dt><span class="en">Languages</span><span class="zh">语言</span></dt><dd><span class="en">Arabic, French, English, German; basic Chinese</span><span class="zh">阿拉伯语、法语、英语、德语；基础中文</span></dd></div>
+        </dl>
+        <p class="orgs-h"><span class="en">Institutions and collaborations</span><span class="zh">所属机构与合作</span></p>
+        <ul class="orgs">
+          <li><span class="org logo" title="Northwestern Polytechnical University"><img src="assets/logos/npu.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Northwestern Polytechnical University</span><span class="zh">西北工业大学</span></b><span class="en">M.Sc. and research</span><span class="zh">硕士与研究</span></span></li>
+          <li><span class="org logo" title="Shanghai Jiao Tong University"><img src="assets/logos/sjtu.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Shanghai Jiao Tong University</span><span class="zh">上海交通大学</span></b><span class="en">collaborator</span><span class="zh">合作单位</span></span></li>
+          <li><span class="org logo" title="Fudan University"><img src="assets/logos/fudan.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Fudan University</span><span class="zh">复旦大学</span></b><span class="en">collaborator</span><span class="zh">合作单位</span></span></li>
+          <li><span class="org" title="UK Biobank">UKB</span><span><b>UK Biobank</b><span class="en">data</span><span class="zh">数据来源</span></span></li>
+          <li><span class="org logo" title="Organization for Human Brain Mapping"><img src="assets/logos/ohbm.webp" alt="" width="40" height="40" loading="lazy"></span><span><b>OHBM</b><span class="en">member, 2026 poster</span><span class="zh">会员，2026 海报</span></span></li>
+          <li><span class="org logo" title="China Scholarship Council"><img src="assets/logos/csc.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">China Scholarship Council</span><span class="zh">国家留学基金委</span></b><span class="en">scholarship</span><span class="zh">奖学金</span></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="work">
+      <h2><span class="en">Selected work</span><span class="zh">代表工作</span></h2>
+      <div class="work">
+        <article class="card" style="--c:var(--caramel);--ct:var(--caramel-t)"><span class="st"><span class="en">Master's thesis · 2027</span><span class="zh">硕士论文 · 2027</span></span>
+          <h3><span class="en">Nine symptoms, not one score</span><span class="zh">九项症状，而不是一个总分</span></h3>
+          <p class="en">A framework that predicts each PHQ-9 symptom from multi-omic data, tests every gain against shuffled outcomes, and explains results with an LLM-built knowledge graph.</p>
+          <p class="zh">一个从多组学数据分别预测 PHQ-9 每项症状的框架：用置换检验验证每一项提升，并用大模型构建的知识图谱解释结果。</p>
+          <div class="tags"><span class="tag"><span class="en">Gradient boosting</span><span class="zh">梯度提升</span></span><span class="tag"><span class="en">Knowledge graphs</span><span class="zh">知识图谱</span></span><span class="tag"><span class="en">LLMs</span><span class="zh">大语言模型</span></span></div></article>
+        <article class="card" style="--c:var(--teal);--ct:var(--teal-t)"><span class="st"><span class="en">First author · under review · open source</span><span class="zh">第一作者 · 在审 · 开源</span></span>
+          <h3>AEGIS</h3>
+          <p class="en">A GPT-style model of lifetime disease histories, trained with differential privacy and audited with planted canary patients. The code is open source and runs on simulated data.</p>
+          <p class="zh">一个学习全生命周期疾病史的 GPT 式模型，采用差分隐私训练，并通过植入“金丝雀”患者进行审计。代码已开源，可在模拟数据上运行。</p>
+          <a class="more" href="https://github.com/azzaouiyazid/AEGIS"><span class="en">Code on GitHub →</span><span class="zh">GitHub 代码 →</span></a>
+          <div class="tags"><span class="tag">Transformers</span><span class="tag">DP-SGD</span><span class="tag"><span class="en">Membership inference</span><span class="zh">成员推断</span></span></div></article>
+        <article class="card" style="--c:var(--caramel);--ct:var(--caramel-t)"><span class="st"><span class="en">Co-first author · under review</span><span class="zh">共同第一作者 · 在审</span></span>
+          <h3><span class="en">Individual protein networks in depression</span><span class="zh">抑郁症的个体化蛋白质网络</span></h3>
+          <p class="en">Each patient's plasma protein network, compared with a healthy reference, reveals biologically distinct groups of depression. With SJTU and Fudan University.</p>
+          <p class="zh">将每位患者的血浆蛋白质网络与健康参照比较，揭示抑郁症在生物学上的不同亚型。与上海交通大学、复旦大学合作。</p>
+          <div class="tags"><span class="tag"><span class="en">Graphical models</span><span class="zh">图模型</span></span><span class="tag"><span class="en">Survival analysis</span><span class="zh">生存分析</span></span><span class="tag"><span class="en">Proteomics</span><span class="zh">蛋白质组学</span></span></div></article>
+        <article class="card" style="--c:var(--plum);--ct:var(--plum-t)"><span class="st"><span class="en">Poster · OHBM 2026, Bordeaux</span><span class="zh">海报 · OHBM 2026，波尔多</span></span>
+          <h3><span class="en">Depression is not one disease</span><span class="zh">抑郁症不是一种病</span></h3>
+          <p class="en">Proteomic links between cardiometabolic and brainstem pathways, presented at the Organization for Human Brain Mapping annual meeting.</p>
+          <p class="zh">心血管代谢与脑干通路之间的蛋白质组学关联，于人类脑图谱组织（OHBM）年会展示。</p>
+          <div class="tags"><span class="tag"><span class="en">Proteomics</span><span class="zh">蛋白质组学</span></span><span class="tag"><span class="en">Brain imaging</span><span class="zh">脑影像</span></span></div></article>
+      </div>
+    </section>
+
+    <section class="sec" id="pubs">
+      <h2><span class="en">Publications</span><span class="zh">论文</span></h2>
+      <ul class="pubs">
+        <li><div class="st"><span class="en">Under review, <i>Nature Communications</i>, 2026</span><span class="zh">在审，<i>Nature Communications</i>，2026</span></div><div class="t">AEGIS: private generative transformers that learn the natural history of disease, not the patients</div><div class="a"><b>Yazid Azzaoui</b>, Xinran Wu, Xuequn Shang, Jie Zhang, Zhaowen Liu* · <a href="https://github.com/azzaouiyazid/AEGIS">code</a></div></li>
+        <li><div class="st"><span class="en">Under review, <i>Brain, Behavior, and Immunity</i>, 2026</span><span class="zh">在审，<i>Brain, Behavior, and Immunity</i>，2026</span></div><div class="t">A complement-depleted axis in major depressive disorder, distinct from C-reactive protein: individualized plasma proteomic network analysis</div><div class="a"><b>Yazid Azzaoui</b>#, Xinran Wu#, Zhengxu Lian, Xuequn Shang, Jie Zhang*, Zhaowen Liu*</div></li>
+        <li><div class="st"><span class="en">Poster, OHBM 2026, Bordeaux</span><span class="zh">海报，OHBM 2026，波尔多</span></div><div class="t">Depression is not one disease: proteomic links between cardiometabolic and brainstem pathways</div></li>
+        <li class="note"><span class="en"># co-first author, * corresponding author</span><span class="zh"># 共同第一作者，* 通讯作者</span></li>
+      </ul>
+    </section>
+
+    <section class="sec" id="conferences">
+      <h2><span class="en">Conferences and international</span><span class="zh">学术会议与国际经历</span></h2>
+      <div class="conf">
+        <figure><img src="assets/img/ohbm_photo.jpg" alt="Yazid Azzaoui presenting his poster at OHBM 2026 in Bordeaux" width="800" height="999" loading="lazy">
+          <figcaption><span class="en">Presenting my poster at OHBM 2026 in Bordeaux, France.</span><span class="zh">在法国波尔多 OHBM 2026 年会上展示海报。</span></figcaption></figure>
+        <div style="display:grid;gap:26px">
+          <ul class="events">
+            <li><span class="where"><span class="en">Bordeaux, France · 2026</span><span class="zh">法国波尔多 · 2026</span></span>
+              <h3><span class="en">Member, Organization for Human Brain Mapping</span><span class="zh">人类脑图谱组织（OHBM）会员</span></h3>
+              <p class="en">I travelled to the OHBM annual meeting to present our poster on my own, and used it to meet researchers in neuroimaging and brain-body health.</p>
+              <p class="zh">我独自赴法国参加 OHBM 年会并展示海报，借此与神经影像及脑—身体健康领域的研究者交流。</p>
+              <img class="banner" src="assets/img/ohbm_title.jpg" alt="Poster title: Depression is Not One Disease: a system-level proteomic axis links cardiometabolic and brainstem pathways. Yazid Azzaoui, Xinran Wu, Zhengxu Lian, Xuequn Shang, Jie Zhang, Zhaowen Liu" width="1000" height="200" loading="lazy"></li>
+            <li><span class="where"><span class="en">Hangzhou, China · 2023</span><span class="zh">中国杭州 · 2023</span></span>
+              <h3><span class="en">Participant, Apsara Conference</span><span class="zh">云栖大会参会者</span></h3>
+              <p class="en">Alibaba Cloud's annual conference on cloud computing and AI, under the theme "Computing for the value beyond computation".</p>
+              <p class="zh">阿里云年度云计算与人工智能大会，主题为“计算，为了无法计算的价值”。</p>
+              <div class="gal"><img src="assets/img/apsara_sign.jpg" alt="Yazid Azzaoui at the 2023 Apsara Conference theme sign in Yunqi Town, Hangzhou" width="900" height="641" loading="lazy"><img src="assets/img/apsara_venue.jpg" alt="The 2023 Apsara Conference venue" width="640" height="362" loading="lazy"></div>
+              <p class="gcap"><span class="en">At the 2023 Apsara Conference in Yunqi Town, Hangzhou.</span><span class="zh">2023 云栖大会，杭州云栖小镇。</span></p></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="experience">
+      <h2><span class="en">Experience</span><span class="zh">经历</span></h2>
+      <ol class="tl">
+        <li><span class="w"><span class="en">2024–present</span><span class="zh">2024–至今</span></span><span class="body"><span class="org logo" title="Northwestern Polytechnical University"><img src="assets/logos/npu.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Graduate researcher</span><span class="zh">研究生研究员</span></b>, <span class="en">Northwestern Polytechnical University</span><span class="zh">西北工业大学</span>
+          <span class="d en">AI, LLMs and multi-omics with Prof. Zhaowen Liu: multimodal prediction of depression symptoms from UK Biobank, private generative transformers (AEGIS), and LLM-built knowledge graphs. Collaborations with SJTU and Fudan University.</span>
+          <span class="d zh">在 刘兆文 教授指导下研究人工智能、大模型与多组学：基于 UK Biobank 的抑郁症状多模态预测、隐私保护的生成式 Transformer（AEGIS），以及大模型构建的知识图谱。与上海交通大学、复旦大学合作。</span></span></span></li>
+        <li><span class="w"><span class="en">Side project</span><span class="zh">个人项目</span></span><span class="body"><span class="org logo" title="CASABLANCAN LLC"><img src="assets/logos/casablancan.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Founder and engineer</span><span class="zh">创始人兼工程师</span></b>, CASABLANCAN LLC · <span class="en">USA</span><span class="zh">美国</span>
+          <span class="d en">Designed and built an online store from scratch, from storefront and checkout to order tracking, with customers worldwide.</span>
+          <span class="d zh">从零设计并搭建一个线上商店：从网站、支付到订单追踪均由我完成，客户遍及全球。</span></span></span></li>
+        <li><span class="w">2022–2023</span><span class="body"><span class="org logo" title="Zhejiang University of Technology"><img src="assets/logos/zjut.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">Research apprentice in machine learning</span><span class="zh">机器学习研究助理</span></b>, <span class="en">Zhejiang University of Technology</span><span class="zh">浙江工业大学</span>
+          <span class="d en">Led a project classifying molecular bioactivity in PubChem with molecular fingerprints and neural networks.</span>
+          <span class="d zh">负责基于 PubChem 数据的分子生物活性分类项目，使用分子指纹与神经网络。</span></span></span></li>
+        <li><span class="w">2022</span><span class="body"><span class="org" title="F2MED, Casablanca">F2MED</span><span><b><span class="en">Software engineering intern</span><span class="zh">软件工程实习生</span></b>, F2MED, <span class="en">Casablanca</span><span class="zh">卡萨布兰卡</span>
+          <span class="d en">Built a web application for stock management with real-time tracking and analytics, and optimised the database behind it.</span>
+          <span class="d zh">开发库存管理 Web 应用（实时追踪与数据分析），并优化其数据库性能。</span></span></span></li>
+      </ol>
+    </section>
+
+    <section class="sec">
+      <h2><span class="en">Education</span><span class="zh">教育背景</span></h2>
+      <ol class="tl">
+        <li><span class="w">2024–2027</span><span class="body"><span class="org logo" title="Northwestern Polytechnical University"><img src="assets/logos/npu.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">M.Sc. Computer Science</span><span class="zh">计算机科学硕士</span></b>, <span class="en">Northwestern Polytechnical University</span><span class="zh">西北工业大学</span><span class="d"><span class="en">Chinese Government Scholarship; member of the Organization for Human Brain Mapping</span><span class="zh">中国政府奖学金；人类脑图谱组织（OHBM）会员</span></span></span></span></li>
+        <li><span class="w">2020–2024</span><span class="body"><span class="org logo" title="Zhejiang University of Technology"><img src="assets/logos/zjut.webp" alt="" width="40" height="40" loading="lazy"></span><span><b><span class="en">B.Sc. Software Engineering</span><span class="zh">软件工程学士</span></b>, <span class="en">Zhejiang University of Technology</span><span class="zh">浙江工业大学</span><span class="d"><span class="en">Outstanding Graduation Thesis Award; Zhejiang Provincial Scholarship</span><span class="zh">优秀毕业论文奖；浙江省政府奖学金</span></span></span></span></li>
+      </ol>
+    </section>
+
+    <section class="sec">
+      <h2><span class="en">Skills</span><span class="zh">技能</span></h2>
+      <div class="skills">
+        <div><h3><span class="en">AI</span><span class="zh">人工智能</span></h3><div class="tags"><span class="tag">PyTorch</span><span class="tag">Transformers</span><span class="tag"><span class="en">LLM pipelines and fine-tuning</span><span class="zh">大模型流程与微调</span></span><span class="tag">Hugging Face</span><span class="tag"><span class="en">Differential privacy</span><span class="zh">差分隐私</span></span><span class="tag"><span class="en">Membership inference</span><span class="zh">成员推断</span></span></div></div>
+        <div><h3><span class="en">Data and statistics</span><span class="zh">数据与统计</span></h3><div class="tags"><span class="tag">UK Biobank</span><span class="tag"><span class="en">Olink proteomics</span><span class="zh">Olink 蛋白质组</span></span><span class="tag"><span class="en">Brain MRI</span><span class="zh">脑 MRI</span></span><span class="tag"><span class="en">ICD-10 records</span><span class="zh">ICD-10 病历</span></span><span class="tag"><span class="en">Graphical models</span><span class="zh">图模型</span></span><span class="tag"><span class="en">Survival analysis</span><span class="zh">生存分析</span></span><span class="tag"><span class="en">Permutation testing</span><span class="zh">置换检验</span></span></div></div>
+        <div><h3><span class="en">Engineering</span><span class="zh">工程</span></h3><div class="tags"><span class="tag">Python</span><span class="tag">R</span><span class="tag">SQL</span><span class="tag"><span class="en">Linux GPU servers</span><span class="zh">Linux GPU 服务器</span></span><span class="tag">Git</span><span class="tag"><span class="en">Full-stack web and e-commerce</span><span class="zh">全栈 Web 与电商</span></span></div></div>
+      </div>
+    </section>
+
+    <section class="sec" id="contact">
+      <h2><span class="en">Get in touch</span><span class="zh">联系我</span></h2>
+      <div style="display:grid;gap:16px">
+        <div class="row"><span class="email" id="email">yazidazzaoui@mail.nwpu.edu.cn</span><button class="btn ghost" id="copy" type="button"><span class="en">Copy email</span><span class="zh">复制邮箱</span></button></div>
+        <div class="row" style="gap:8px 26px"><a href="https://orcid.org/0009-0004-1744-2056">ORCID</a><a href="https://github.com/azzaouiyazid">GitHub</a><a href="https://www.linkedin.com/in/yazid-azzaoui/">LinkedIn</a><a class="en" href="assets/cv/Yazid_Azzaoui_CV_EN.pdf" download>CV (PDF)</a><a class="zh" href="assets/cv/Yazid_Azzaoui_CV_ZH.pdf" download>简历（PDF）</a></div>
+      </div>
+    </section>
+  </div>
+</div>
+</main>
+<footer class="foot"><div class="wrap"><span><span class="en">Yazid Azzaoui, Xi'an</span><span class="zh">Yazid Azzaoui，西安</span></span><span><span class="en">3D brain: Allen Human Reference Atlas–3D (2020), via the HuBMAP CCF 3D Reference Object Library, CC BY 4.0.</span><span class="zh">3D 大脑模型：Allen Human Reference Atlas–3D（2020），来自 HuBMAP CCF 3D 参考对象库，CC BY 4.0。</span></span><span><span class="en">Updated November 2026</span><span class="zh">更新于 2026 年 11 月</span></span></div></footer>
+
+<script src="assets/js/three.min.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/page.js"></script>
+<script src="assets/js/illustrations.js"></script>
+<script src="assets/js/brain.js"></script>
+</body>
+</html>
