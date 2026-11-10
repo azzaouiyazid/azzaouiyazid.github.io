@@ -10,6 +10,13 @@
 
   // card size in the unit frame; every diagram is laid out to fit inside it
   const CARD_W = 1.98, CARD_H = 1.22, CARD_R = 0.09, CARD_BOTTOM = -0.66;
+  // on wide screens the card grows a header band above the diagram and a band of steps below it,
+  // filled by an HTML panel (see makeInfoCard); the diagram itself stays within y = +-0.5.
+  // WIDE_BOTTOM is only the starting guess: fitCard moves each card's bottom to fit its steps
+  const WIDE_TOP = 0.8, WIDE_BOTTOM = -1.3, DIAGRAM_TOP = 0.5, DIAGRAM_BOTTOM = -0.5;
+  // the HTML panel is laid out at this width in CSS px and scaled to the card's width on screen,
+  // so its bands always fill the same share of the card: 0.3 units of header is 99 px at 653 px
+  const PANEL_W = 653;
   // the card sits behind the parts by this much, so they cast no z-fighting against it
   const CARD_Z = -0.24;
   // drawn after the brain (renderOrder 2) so a shard behind the card never shows through it
@@ -123,6 +130,19 @@
         hot(-0.17, 0.03, 0.1, 'Attention', '注意力', 'How the model links words across a sentence.', '模型如何在句子中关联词语。'),
         hot(0.62, 0.03, 0.27, 'Knowledge graph', '知识图谱', 'Entities and relations, each checked against the data.', '实体与关系，逐条用数据核验。'),
       ],
+      info: {
+        eyebrow: ['01 · Language models', '01 · 大语言模型'],
+        title: ['From papers to a knowledge graph you can check', '从文献到可核验的知识图谱'],
+        chips: [{ text: ["Master's thesis · in progress", '硕士课题 · 进行中'], strong: true }, { text: ['Explainable AI', '可解释 AI'] }],
+        steps: [
+          { kicker: ['Read', '读取'], name: ['Biomedical papers', '生物医学文献'], text: ['Published studies on the proteins, metabolites and genes in the model.', '关于模型中蛋白、代谢物和基因的已发表研究。'], spec: ['input: the literature', '输入：科研文献'] },
+          { kicker: ['Extract', '抽取'], name: ['Multimodal LLM', '多模态大模型'], text: ['Reads each passage and pulls out the relationships it reports.', '阅读每段文本，抽取其中报道的关系。'], spec: ['entity → relation → entity', '实体 → 关系 → 实体'] },
+          { kicker: ['Build and check', '构建与核验'], name: ['Knowledge graph', '知识图谱'], text: ['The relations become a graph, and each one is checked against the data.', '关系组成图谱，每一条都用数据核验。'], spec: ['every edge traced to a source', '每条边都可追溯来源'] },
+        ],
+        icon: 'graph',
+        lead: ['Why it matters.', '意义。'],
+        note: ['The graph explains the multi-omics models in area 03: every prediction can be traced back to a paper and to the data.', '图谱用于解释方向 03 的多组学模型：每个预测都能追溯到文献和数据。'],
+      },
       labels: [['papers', 'papers', '文献', V(-0.71, -0.25)], ['LLM', 'LLM', '大模型', V(-0.17, -0.3)], ['knowledge graph', 'graph', '知识图谱', V(0.62, -0.36)]],
       update(t) {
         flow(t);
@@ -162,6 +182,19 @@
           '训练时对每位患者的贡献进行裁剪并加入噪声（DP-SGD），限制模型对任何个人的记忆。'),
         hot(0.62, -0.08, 0.13, 'Synthetic records', '合成病历', 'New disease histories sampled from the trained model.', '从训练好的模型中采样的新疾病史。'),
       ],
+      info: {
+        eyebrow: ['02 · Generative AI and privacy', '02 · 生成式 AI 与隐私'],
+        title: ['AEGIS: a private GPT for disease histories', 'AEGIS：学习疾病史的隐私保护 GPT'],
+        chips: [{ text: ['First author · under review', '第一作者 · 论文在审'], strong: true }, { text: ['Open-source code', '开源代码'], href: 'https://github.com/azzaouiyazid/AEGIS' }],
+        steps: [
+          { kicker: ['Input', '输入'], name: ['Disease histories', '疾病史'], text: ["Each person's diagnoses (ICD-10) in time order, read like a sentence.", '每个人按时间排列的诊断编码（ICD-10），像句子一样被读取。'], spec: ['251,204 people · UK Biobank', '251,204 人 · UK Biobank'] },
+          { kicker: ['Model', '模型'], name: ['Private GPT', '隐私 GPT'], text: ['A causal transformer trained with DP-SGD, so no single patient can shape it much.', '采用 DP-SGD 训练的因果 Transformer，任何一位患者都无法显著影响模型。'], spec: ['privacy budget ε = 8 · 3 · 1', '隐私预算 ε = 8 · 3 · 1'] },
+          { kicker: ['Output', '输出'], name: ['Synthetic records', '合成病历'], text: ['New, shareable histories sampled from the trained model.', '从训练好的模型中采样、可以共享的新疾病史。'], spec: ['checked for leaks', '已做泄露检验'] },
+        ],
+        icon: 'shield',
+        lead: ['Privacy audit.', '隐私审计。'],
+        note: ['We plant “canary” patients in training and run membership-inference attacks to test whether the model remembers anyone.', '我们在训练数据中植入“金丝雀”患者，并进行成员推断攻击，检验模型是否记住了任何个人。'],
+      },
       labels: [['patient history', 'history', '疾病史', V(-0.66, -0.27)], ['private GPT', 'private GPT', '隐私 GPT', V(0, -0.5)], ['synthetic records', 'synthetic', '合成病历', V(0.62, -0.27)]],
       update(t) {
         flow(t);
@@ -201,6 +234,21 @@
         hot(0, 0, 0.24, 'Multimodal model', '多模态模型', 'Learns from all four data types together, with a separate output for each symptom.', '同时学习四类数据，并为每项症状单独输出。'),
         ...symptomY.map((y, j) => hot(0.64, y, 0.048, `PHQ-9 item ${j + 1}`, `PHQ-9 第 ${j + 1} 项`, Site.PHQ9[j][0], Site.PHQ9[j][1])),
       ],
+      info: {
+        eyebrow: ['03 · Multimodal AI', '03 · 多模态 AI'],
+        title: ['Four kinds of biology, nine predictions', '四类生物数据，九项预测'],
+        chips: [{ text: ["Master's thesis · in progress", '硕士课题 · 进行中'], strong: true }, { text: ['UK Biobank', 'UK Biobank'] }],
+        steps: [
+          { kicker: ['Inputs', '输入'], name: ['Omics and brain MRI', '组学与脑 MRI'],
+            legend: [[rowColors[0], 'Plasma proteins (Olink)', '血浆蛋白（Olink）'], [rowColors[1], 'Metabolites (NMR)', '代谢物（NMR）'],
+              [rowColors[2], 'Genetics (polygenic scores)', '遗传（多基因评分）'], [rowColors[3], 'Brain MRI features', '脑 MRI 特征']] },
+          { kicker: ['Model', '模型'], name: ['Multimodal model', '多模态模型'], text: ['Learns from all four data types together, with a separate output for each symptom.', '同时学习四类数据，并为每项症状单独输出。'], spec: ['4 inputs → 9 outputs', '4 类输入 → 9 项输出'] },
+          { kicker: ['Outputs', '输出'], name: ['Nine symptoms', '九项症状'], text: ['Each PHQ-9 item predicted on its own, not one overall score.', '分别预测 PHQ-9 的每一项，而不是一个总分。'], dots: 9 },
+        ],
+        icon: 'test',
+        lead: ['Tested, not assumed.', '检验而非假设。'],
+        note: ['Depression is the test case. Every gain from adding a data type is checked against shuffled outcomes (permutation tests).', '以抑郁症为测试场景。加入每类数据带来的提升，都用打乱结果的置换检验来核实。'],
+      },
       labels: [['omics + MRI', 'omics + MRI', '组学 + MRI', V(-0.75, -0.4)], ['multimodal model', 'model', '多模态模型', V(0, -0.45)], ['9 symptoms', '9 symptoms', '9 项症状', V(0.64, -0.52)]],
       update(t) {
         flowIn(t);
@@ -211,9 +259,20 @@
     };
   }
 
-  // the floating card behind a diagram, with the area's colour as a bar along the top
-  function addCard(g, accent) {
-    const x0 = -CARD_W / 2, y0 = CARD_BOTTOM, r = CARD_R;
+  /**
+   * The floating card behind a diagram, with the area's colour as a bar along the top.
+   *
+   * @param {THREE.Group} g   the diagram group the card is added to
+   * @param {string} accent   colour of the bar
+   * @param {number} bottom   lower edge in the unit frame
+   * @param {number} top      upper edge in the unit frame
+   * @param {number} opacity  of the face: the wide card carries text, so it is more solid
+   * @returns {THREE.Group} the card, so brain.js can show the narrow or the wide one
+   */
+  function addCard(g, accent, bottom, top, opacity) {
+    const card = new THREE.Group();
+    const CARD_H = top - bottom;
+    const x0 = -CARD_W / 2, y0 = bottom, r = CARD_R;
     const shape = new THREE.Shape();
     shape.moveTo(x0 + r, y0);
     shape.lineTo(x0 + CARD_W - r, y0);
@@ -224,18 +283,19 @@
     shape.quadraticCurveTo(x0, y0 + CARD_H, x0, y0 + CARD_H - r);
     shape.lineTo(x0, y0 + r);
     shape.quadraticCurveTo(x0, y0, x0 + r, y0);
-    // 74% opaque: enough to read the parts, while the opened lobe still shows through around them
     const face = new THREE.Mesh(new THREE.ShapeGeometry(shape, 6),
-      new THREE.MeshBasicMaterial({ color: COL.cream, transparent: true, opacity: 0.74, toneMapped: false, depthWrite: false }));
+      new THREE.MeshBasicMaterial({ color: COL.cream, transparent: true, opacity, toneMapped: false, depthWrite: false }));
     face.position.z = CARD_Z;
-    g.add(face);
+    card.add(face);
     const outline = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(shape.getPoints(8)), new THREE.LineBasicMaterial({ color: '#D9BFA0', toneMapped: false }));
     outline.position.z = CARD_Z + 0.001;
-    g.add(outline);
+    card.add(outline);
     const bar = new THREE.Mesh(new THREE.PlaneGeometry(CARD_W - 0.5, 0.024), new THREE.MeshBasicMaterial({ color: accent, toneMapped: false }));
     bar.position.set(0, y0 + CARD_H - 0.012, CARD_Z + 0.002);
-    g.add(bar);
-    g.traverse(o => { o.renderOrder = CARD_ORDER; });
+    card.add(bar);
+    card.traverse(o => { o.renderOrder = CARD_ORDER; });
+    g.add(card);
+    return card;
   }
 
   /**
@@ -250,22 +310,166 @@
     return el;
   };
 
+  // stroke icons for the takeaway strip at the foot of each card; ours, never user text
+  const ICONS = {
+    graph: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8.3 7l7.4-.2M7.2 8.2l3.8 7.6M16.9 9.3l-3.7 6.5"/>',
+    shield: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/>',
+    test: '<path d="M4 7h11M4 12h16M4 17h8"/><path d="M17 4l3 3-3 3"/>',
+  };
+  const CODE_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4L2 8l4 4M10 4l4 4-4 4"/></svg>';
+
+  function el(tag, cls, parent) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (parent) parent.append(e);
+    return e;
+  }
+
+  /**
+   * The HTML half of a wide card: a header band above the diagram (area, title, status chips)
+   * and a foot band below it (three numbered steps and a takeaway strip). Both are laid out at
+   * PANEL_W px and scaled by brain.js to the card's width on screen, so the text is real text (sharp
+   * at any size, found by find-in-page) while the 3D diagram between them keeps turning.
+   *
+   * @param {HTMLElement} layer   the label layer
+   * @param {object} info         the diagram's info block (two-language pairs, [en, zh])
+   * @param {number} lobe         0 frontal, 1 temporal, 2 occipital; picks the accent colours
+   * @returns {{head: HTMLElement, foot: HTMLElement, render: function(): void}}
+   */
+  function makeInfoCard(layer, info, lobe) {
+    const tone = ['caramel', 'teal', 'plum'][lobe];
+    Site.assert(info.steps.length === 3, `card ${lobe} needs three steps, has ${info.steps.length}`);
+    const head = el('div', `ic ic-head ic-${tone}`, layer);
+    const foot = el('div', `ic ic-foot ic-${tone}`, layer);
+    head.style.height = `${Math.round((WIDE_TOP - DIAGRAM_TOP) / CARD_W * PANEL_W)}px`;
+
+
+    const tr = pair => Site.tr(pair[0], pair[1]);
+
+    function renderHead() {
+      head.replaceChildren();
+      const left = el('div', 'ic-titles', head);
+      el('div', 'ic-eyebrow', left).textContent = tr(info.eyebrow);
+      el('div', 'ic-title', left).textContent = tr(info.title);
+      const chips = el('div', 'ic-chips', head);
+      info.chips.forEach(c => {
+        const chip = el(c.href ? 'a' : 'span', `ic-chip${c.strong ? ' strong' : ''}`, chips);
+        if (c.href) {
+          chip.href = c.href;
+          chip.target = '_blank';
+          chip.rel = 'noopener';
+          // the label layer is hidden from screen readers, so keep this out of the tab order too;
+          // the same link is in the page's own text for keyboard and screen-reader visitors
+          chip.tabIndex = -1;
+          chip.innerHTML = CODE_ICON;
+        }
+        chip.append(tr(c.text));
+      });
+      el('div', 'ic-hint', head).textContent = Site.tr(Site.TOUCH ? 'tap any part for details' : 'point at any part for details', Site.TOUCH ? '点按任意部分查看说明' : '指向任意部分查看说明');
+    }
+
+    function renderFoot() {
+      foot.replaceChildren();
+      const steps = el('div', 'ic-steps', foot);
+      info.steps.forEach((st, i) => {
+        if (i) el('div', 'ic-arrow', steps).textContent = '→';
+        const box = el('div', 'ic-step', steps);
+        const k = el('div', 'ic-kicker', box);
+        el('span', 'ic-num', k).textContent = String(i + 1);
+        k.append(tr(st.kicker));
+        el('div', 'ic-name', box).textContent = tr(st.name);
+        if (st.text) el('div', 'ic-text', box).textContent = tr(st.text);
+        if (st.legend) {
+          const lg = el('div', 'ic-legend', box);
+          st.legend.forEach(([color, en, zh]) => {
+            el('span', 'ic-swatch', lg).style.background = color;
+            el('span', '', lg).textContent = Site.tr(en, zh);
+          });
+        }
+        if (st.spec) el('span', 'ic-spec', box).textContent = tr(st.spec);
+        if (st.dots) {
+          const row = el('div', 'ic-dots', box);
+          for (let d = 0; d < st.dots; d++) el('span', '', row);
+        }
+      });
+      const note = el('div', 'ic-note', foot);
+      const icon = el('span', 'ic-icon', note);
+      icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[info.icon]}</svg>`;
+      const txt = el('div', '', note);
+      el('b', '', txt).textContent = `${tr(info.lead)} `;
+      txt.append(tr(info.note));
+    }
+
+    const render = () => {
+      renderHead();
+      renderFoot();
+    };
+    render();
+    // the foot's natural height in panel px; .ic keeps it laid out (visibility, not display) so this works hidden
+    const footHeight = () => foot.offsetHeight;
+    return { head, foot, render, footHeight };
+  }
+
+  // where brain.js reads the card's shape: corners in the unit frame and the panel's layout width
+  Site.CARD_SHAPE = { W: CARD_W, Z: CARD_Z, WIDE_TOP, WIDE_BOTTOM, DIAGRAM_BOTTOM, PANEL_W };
+
+  // free a card's GPU buffers before it is replaced, since the old one is otherwise never collected
+  function disposeCard(card) {
+    card.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) o.material.dispose();
+    });
+    card.parent.remove(card);
+  }
+
+  /**
+   * Rebuild a diagram's tall card so its bottom band is exactly as tall as its steps and takeaway.
+   * The text differs per area and per language, so a fixed band left empty space under the short ones.
+   */
+  function fitCard(d, lobe, accent) {
+    const h = d.ic.footHeight();
+    if (!h) return; // not laid out (the 3D layer is hidden); keep the current card
+    const bottom = DIAGRAM_BOTTOM - h / PANEL_W * CARD_W;
+    if (d.cardWide && Math.abs(bottom - d.wideBottom) < 0.002) return;
+    if (d.cardWide) disposeCard(d.cardWide);
+    d.cardWide = addCard(d.g, accent, bottom, WIDE_TOP, 0.94);
+    d.wideBottom = bottom;
+  }
+
   /**
    * Build the three diagrams, hidden, indexed by lobe (0 frontal, 1 temporal, 2 occipital).
    *
+   * Each gets two cards: the original compact one for phones, where the short pill labels name
+   * the parts, and the tall one for wide screens, whose bands hold the HTML panel instead.
+   *
    * @param {THREE.Scene} scene   where the diagram groups are added
    * @param {HTMLElement} layer   where their HTML labels go
-   * @returns {Array<{g: THREE.Group, hots: Array, els: Array, update: function(number): void}>}
+   * @returns {Array<{g: THREE.Group, hots: Array, els: Array, ic: object, cardNarrow: THREE.Group,
+   *   cardWide: THREE.Group, update: function(number): void}>}
    */
   Site.buildIllustrations = (scene, layer) => {
     const byLobe = [omicsDiagram(), privacyDiagram(), llmDiagram()];
     const accents = [COL.caramel, COL.teal, COL.plum];
-    return byLobe.map((d, lobe) => {
-      addCard(d.g, accents[lobe]);
+    const diagrams = byLobe.map((d, lobe) => {
+      // 74% opaque on phones: the parts stay readable while the opened lobe shows through;
+      // 94% on wide screens, because there the card carries running text
+      d.cardNarrow = addCard(d.g, accents[lobe], CARD_BOTTOM, CARD_BOTTOM + CARD_H, 0.74);
+      d.cardWide = addCard(d.g, accents[lobe], WIDE_BOTTOM, WIDE_TOP, 0.94);
+      d.wideBottom = WIDE_BOTTOM;
       d.g.visible = false;
       scene.add(d.g);
       d.els = d.labels.map(([full, short, zh, p]) => ({ el: Site.makeLabel(layer, 'il'), p, full, short, zh }));
+      d.ic = makeInfoCard(layer, d.info, lobe);
+      // re-render the text in the current language, then refit the card around it
+      d.relayout = () => {
+        d.ic.render();
+        fitCard(d, lobe, accents[lobe]);
+      };
+      d.relayout();
       return d;
     });
+    // the first fit used fallback fonts; the real ones are wider, so fit again once they load
+    if (document.fonts) document.fonts.ready.then(() => diagrams.forEach(d => d.relayout()));
+    return diagrams;
   };
 })();

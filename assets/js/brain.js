@@ -496,7 +496,10 @@
 
   // every 3D label follows the page language; diagram labels shorten on phones, where width is scarce
   function relabel() {
-    diagrams.forEach(d => d.els.forEach(L => { L.el.textContent = Site.lang() === 'zh' ? L.zh : narrow ? L.short : L.full; }));
+    diagrams.forEach(d => {
+      d.els.forEach(L => { L.el.textContent = Site.lang() === 'zh' ? L.zh : narrow ? L.short : L.full; });
+      d.relayout();
+    });
     nodes.forEach((n, i) => { n.el.textContent = Site.tr(NODES[i][0], NODES[i][1]); });
     hideCard();
   }
@@ -693,36 +696,69 @@
     }
   }
 
+  // the wide card's text is laid out at PANEL_W px; past this scale it reads as shouting
+  const MAX_PANEL_SCALE = 1.05;
+  // below this the panel text is too small to read, so the compact card is used instead
+  const MIN_PANEL_SCALE = 0.78;
+  // keep the wide card under the top bar and off the bottom edge
+  const CARD_TOP_GAP = 72, CARD_BOTTOM_GAP = 14;
+  let compact = true; // this frame shows the compact card (phones, small windows)
+
   /**
    * Raise each research lobe's diagram out of it, in front of the brain, and keep it on screen.
+   *
    * The card sits between the lobe and the brain's centre (42% of the way), 1.1 brain radii towards
-   * the camera, so it floats clear of the shards. On wide screens we keep it out of the text column
-   * (the left 46%); it pops in only after the shards have started moving (explode 0.25 to 0.9).
+   * the camera (1.7 for the tall card), so it floats clear of the shards. On wide screens we keep it
+   * out of the text column (the left 46%); it pops in only after the shards have started moving
+   * (explode 0.25 to 0.9). Phones and small windows keep the compact card and its pill labels. Wider screens show the
+   * tall card at the largest size that fits beside the text column and inside the screen height,
+   * slid up or down to clear the top bar, with the HTML header and steps laid over its two bands.
    */
   function placeDiagrams(scale, t) {
     const toCamera = tmpA.copy(camera.position).sub(world.position).normalize();
+    const CS = Site.CARD_SHAPE;
+    // px per diagram unit for a tall card whose bottom is at `bottom`: the widest that fits, never past MAX_PANEL_SCALE
+    const fitFor = bottom => Math.min((vw * 0.54 - 24) / CS.W, (vh - CARD_TOP_GAP - CARD_BOTTOM_GAP) / (CS.WIDE_TOP - bottom),
+      MAX_PANEL_SCALE * CS.PANEL_W / CS.W);
+    // one decision for all three cards, judged on the tallest, so scrolling never flips the style
+    const tallest = Math.min(...diagrams.map(d => d.wideBottom));
+    compact = narrow || fitFor(tallest) * CS.W / CS.PANEL_W < MIN_PANEL_SCALE;
     diagrams.forEach((d, i) => {
       const pop = ease(sst(0.25, 0.9, explode[i]));
       d.g.visible = pop > 0.003 && !!lobeCentre[i];
+      d.cardNarrow.visible = compact;
+      d.cardWide.visible = !compact;
       if (d.g.visible) {
-        const at = lobeCentre[i].clone().applyMatrix4(pivot.matrixWorld).lerp(world.position, 0.42).addScaledVector(toCamera, 1.1 * radius * scale);
-        const size = radius * scale * (narrow ? 0.95 : 0.72) * pop;
+        // the wide card comes further forward, so the shards of the opened lobe fall behind its text
+        const at = lobeCentre[i].clone().applyMatrix4(pivot.matrixWorld).lerp(world.position, 0.42)
+          .addScaledVector(toCamera, (compact ? 1.1 : 1.7) * radius * scale);
+        const perspective = CAMERA_Z / (CAMERA_Z - at.z);
+        const unitPx = pxPerUnit * perspective; // CSS px per world unit at the card's depth
+        // compact: sized from the brain as before; tall: size is px per diagram unit over unitPx
+        const size = (compact ? radius * scale * (narrow ? 0.95 : 0.72) : fitFor(d.wideBottom) / unitPx) * pop;
         d.g.position.copy(at);
         d.g.scale.setScalar(size);
         // the card is about 2 units wide, so its half width on screen is about `size` world units
-        const perspective = CAMERA_Z / (CAMERA_Z - at.z);
-        const halfPx = size * pxPerUnit * perspective;
-        const cx = vw / 2 + at.x * pxPerUnit * perspective;
+        const halfPx = size * unitPx;
+        const cx = vw / 2 + at.x * unitPx;
         const left = narrow ? 12 : Math.min(vw * 0.46, vw - 12 - 2 * halfPx);
         const nx = Math.min(vw - 12 - halfPx, Math.max(left + halfPx, cx));
-        d.g.position.x += (nx - cx) / (pxPerUnit * perspective);
-        d.g.rotation.set(0.12, (RM ? 0 : 0.2 * Math.sin(t * 0.4)) - 0.12, 0);
+        d.g.position.x += (nx - cx) / unitPx;
+        if (!compact) {
+          // screen y grows downward while world y grows upward, hence the minus signs below
+          const cy = toScreen(d.g.position).y;
+          const top = cy - CS.WIDE_TOP * halfPx, bottom = cy - d.wideBottom * halfPx;
+          const shift = Math.max(0, CARD_TOP_GAP - top) - Math.max(0, bottom - (vh - CARD_BOTTOM_GAP));
+          d.g.position.y -= shift / unitPx;
+        }
+        // the wide card barely turns: its HTML bands are flat, so a strong tilt would split them from the card
+        d.g.rotation.set(compact ? 0.12 : 0.03, (RM ? 0 : (compact ? 0.2 : 0.04) * Math.sin(t * 0.4)) - (compact ? 0.12 : 0.02), 0);
         d.update(t);
         d.g.updateMatrixWorld(true);
       }
       const show = sst(0.65, 1, explode[i]);
       d.els.forEach(L => {
-        if (show < 0.01 || !d.g.visible) {
+        if (show < 0.01 || !d.g.visible || !compact) {
           L.el.style.opacity = 0;
           return;
         }
@@ -730,7 +766,30 @@
         L.el.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`;
         L.el.style.opacity = show;
       });
+      placePanel(d, show);
     });
+    // the "drag to turn" hint sits where a tall card's chips go; hide it while one is open
+    document.documentElement.classList.toggle('card-open', !compact && Math.max(...explode) > 0.3);
+  }
+
+  // lay the HTML header and foot over the wide card's bands, scaled to the card's width on screen
+  function placePanel(d, show) {
+    const { head, foot } = d.ic;
+    if (compact || show < 0.01 || !d.g.visible) {
+      head.style.opacity = foot.style.opacity = 0;
+      head.style.visibility = foot.style.visibility = 'hidden';
+      return;
+    }
+    const CS = Site.CARD_SHAPE;
+    // measured on the card's face, which sits behind the parts at z = CS.Z
+    const corner = (x, y) => toScreen(V(x, y, CS.Z).applyMatrix4(d.g.matrixWorld));
+    const tl = corner(-CS.W / 2, CS.WIDE_TOP), tr = corner(CS.W / 2, CS.WIDE_TOP);
+    const ml = corner(-CS.W / 2, CS.DIAGRAM_BOTTOM);
+    const k = Math.hypot(tr.x - tl.x, tr.y - tl.y) / CS.PANEL_W;
+    head.style.transform = `translate(${tl.x}px, ${tl.y}px) scale(${k})`;
+    foot.style.transform = `translate(${ml.x}px, ${ml.y}px) scale(${k})`;
+    head.style.visibility = foot.style.visibility = 'visible';
+    head.style.opacity = foot.style.opacity = show;
   }
 
   // which diagram hot spot is under the pointer, if any; only once a diagram is nearly fully open
